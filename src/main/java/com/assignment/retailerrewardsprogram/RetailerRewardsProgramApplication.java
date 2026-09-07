@@ -1,4 +1,4 @@
-package com.assignment.retailer_rewards_program;
+package com.assignment.retailerrewardsprogram;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
