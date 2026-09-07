@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.assignment.retailer-rewards-program' is invalid and this project uses 'com.assignment.retailer_rewards_program' instead.
+* The original package name 'com.assignment.retailer-rewards-program' is invalid and this project uses 'com.assignment.retailerrewardsprogram' instead.
 
 # Getting Started
 

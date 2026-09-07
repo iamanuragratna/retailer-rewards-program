@@ -1,4 +1,4 @@
-package com.assignment.retailer_rewards_program;
+package com.assignment.retailerrewardsprogram;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
