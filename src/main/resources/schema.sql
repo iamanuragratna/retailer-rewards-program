@@ -1,0 +1,15 @@
+CREATE TABLE customers (
+    id BIGINT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE transactions (
+    id BIGINT PRIMARY KEY,
+    customer_id BIGINT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    transaction_date DATE NOT NULL,
+
+    CONSTRAINT fk_transaction_customer
+        FOREIGN KEY (customer_id)
+        REFERENCES customers(id)
+);
