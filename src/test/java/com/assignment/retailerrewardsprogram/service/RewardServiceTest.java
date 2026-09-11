@@ -62,13 +62,26 @@ class RewardServiceTest {
                 LocalDate.of(2026, 7, 10)
         );
 
+        Transaction augustTransaction = new Transaction();
+        augustTransaction.setId(3L);
+        augustTransaction.setCustomer(customer);
+        augustTransaction.setAmount(BigDecimal.valueOf(150));
+        augustTransaction.setTransactionDate(
+                LocalDate.of(2026, 8, 10)
+        );
+
+        when(rewardCalculationService.calculateRewardPoints(
+                BigDecimal.valueOf(150)))
+                .thenReturn(150);
+
         when(customerRepository.findById(1L))
                 .thenReturn(Optional.of(customer));
 
         when(transactionRepository.findByCustomerId(1L))
                 .thenReturn(List.of(
                         juneTransaction,
-                        julyTransaction
+                        julyTransaction,
+                        augustTransaction
                 ));
 
         when(rewardCalculationService.calculateRewardPoints(
@@ -84,8 +97,8 @@ class RewardServiceTest {
 
         assertEquals(1L, result.customerId());
         assertEquals("Anurag Ratna", result.customerName());
-        assertEquals(2, result.monthlyRewards().size());
-        assertEquals(120, result.totalPoints());
+        assertEquals(3, result.monthlyRewards().size());
+        assertEquals(270, result.totalPoints());
     }
 
     @Test
@@ -97,6 +110,41 @@ class RewardServiceTest {
         assertThrows(
                 CustomerNotFoundException.class,
                 () -> rewardService.getRewardSummary(999L)
+        );
+    }
+
+    @Test
+    void shouldRejectTransactionsOutsideThreeMonthWindow() {
+
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setName("Anurag Ratna");
+
+        Transaction januaryTransaction = new Transaction();
+        januaryTransaction.setAmount(BigDecimal.valueOf(120));
+        januaryTransaction.setTransactionDate(LocalDate.of(2026, 1, 10));
+
+        Transaction aprilTransaction = new Transaction();
+        aprilTransaction.setAmount(BigDecimal.valueOf(80));
+        aprilTransaction.setTransactionDate(LocalDate.of(2026, 4, 10));
+
+        when(customerRepository.findById(1L))
+                .thenReturn(Optional.of(customer));
+
+        when(transactionRepository.findByCustomerId(1L))
+                .thenReturn(List.of(
+                        januaryTransaction,
+                        aprilTransaction
+                ));
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> rewardService.getRewardSummary(1L)
+        );
+
+        assertEquals(
+                "Transactions must fall within a maximum three-month window.",
+                exception.getMessage()
         );
     }
 }
